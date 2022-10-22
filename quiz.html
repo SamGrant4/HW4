@@ -328,6 +328,22 @@
 
 <body>
     <div class="container">
+
+        <div id="options-container">
+            <div id="options"> Options </div>
+            <div id="options-boxes">
+                <!-- Card Shuffle -->
+                <label for="card-shfl-btn">Card Shuffling:</label>
+                <input type="checkbox" checked name="card-shfl-btn" id="card-shfl-btn">
+                <!-- Timed Session -->
+                <label for="timer-btn">Timed Session:</label>
+                <input type="checkbox" name="timer-btn" id="timer-btn">
+                <!-- Remove correctly answered questions -->
+                <label for="rmv-crct-btn">Remove Correct from Deck:</label>
+                <input type="checkbox" name="rmv-crct-btn" id="rmv-crct-btn">
+            </div>
+        </div>
+
         <div id="question-container" class="hide">
             <div id="question">Question</div>
             <div id="answer-buttons" class="btn-grid">
@@ -337,11 +353,13 @@
                 <button class="btn">Answer 4</button>
             </div>
         </div>
+
         <div class="controls">
             <button id="back-btn" class="back-btn btn hide">Back</button>
             <button id="start-btn" class="start-btn btn">Start</button>
             <button id="next-btn" class="next-btn btn hide">Next</button>
         </div>
+
     </div>
 </body>
 
