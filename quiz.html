@@ -25,6 +25,8 @@
             padding: 0;
             margin: 0;
             display: flex;
+            flex-direction: column-reverse;
+            gap: 25px;
             width: 100vw;
             height: 100vh;
             justify-content: center;
@@ -80,6 +82,7 @@
         }
 
         .start-btn,
+        .back-btn,
         .next-btn {
             font-size: 1.5rem;
             font-weight: bold;
@@ -90,6 +93,7 @@
             display: flex;
             justify-content: center;
             align-items: center;
+            gap: 10px;
         }
 
         .hide {
@@ -104,9 +108,13 @@
         function domLoaded() {
             const startButton = document.getElementById('start-btn')
             const nextButton = document.getElementById('next-btn')
+            const backButton = document.getElementById('back-btn')
             const questionContainerElement = document.getElementById('question-container')
             const questionElement = document.getElementById('question')
             const answerButtonsElement = document.getElementById('answer-buttons')
+
+            // global variable to keep track of restarts
+            let restartCount = 0; 
 
             let shuffledQuestions, currentQuestionIndex
             //using the domLoaded function because the buttons need to be rendered before we can
@@ -116,10 +124,18 @@
                 currentQuestionIndex++
                 setNextQuestion()
             })
+            backButton.addEventListener('click', () => {
+                currentQuestionIndex--
+                setNextQuestion()
+                startButton.classList.add('hide')
+            })
 
             function startGame() {
                 startButton.classList.add('hide')
-                shuffledQuestions = questions.sort(() => Math.random() - .5)
+                if(restartCount == 0){
+                    shuffledQuestions = questions.sort(() => Math.random() - .5)
+                }
+                restartCount++
                 currentQuestionIndex = 0
                 questionContainerElement.classList.remove('hide')
                 setNextQuestion()
@@ -147,6 +163,8 @@
             function resetState() {
                 clearStatusClass(document.body)
                 nextButton.classList.add('hide')
+                backButton.classList.add('hide')
+                removeInfo()
                 while (answerButtonsElement.firstChild) {
                     answerButtonsElement.removeChild(answerButtonsElement.firstChild)
                 }
@@ -160,19 +178,25 @@
                     setStatusClass(button, button.dataset.correct)
                 })
                 if (shuffledQuestions.length > currentQuestionIndex + 1) {
+                    if(currentQuestionIndex!= 0){
+                        backButton.classList.remove('hide')
+                    }
                     nextButton.classList.remove('hide')
                 } else {
                     startButton.innerText = 'Restart'
                     startButton.classList.remove('hide')
-                }
+                    backButton.classList.remove('hide')
+                } 
+                addInfo()
+
             }
 
             function setStatusClass(element, correct) {
                 clearStatusClass(element)
                 if (correct) {
-                    element.classList.add('correct')
+                    element.classList.add('correct');
                 } else {
-                    element.classList.add('wrong')
+                    element.classList.add('wrong');
                 }
             }
 
@@ -181,26 +205,122 @@
                 element.classList.remove('wrong')
             }
 
+            function addInfo(){
+                // only add if it doesn't already exist
+                if(document.getElementById("add-info") == null){
+                    let newDiv = document.createElement('div');
+                    newDiv.id = 'add-info';
+                    newDiv.style = "width: 800px; max-width: 80%; background-color: lightblue; border-radius: 5px; padding: 10px; box-shadow: 0 0 10px 2px;";
+                    newDiv.innerHTML = shuffledQuestions[currentQuestionIndex].info;
+                    document.body.appendChild(newDiv); 
+                }
+            }
+
+            function removeInfo(){
+                // only remove if it can be found
+                if(document.getElementById("add-info") != null){
+                    document.getElementById("add-info").remove();
+                }
+            }
+
+            // Flash card questions 
             const questions = [
                 {
-                    question: 'This is a test question',
+                    question: 'What is the largest continent in the world?',
                     answers: [
-                        { text: 'Correct Answer', correct: true },
-                        { text: 'Incorrect Answer', correct: false },
-                    ]
+                        { text: 'Africa', correct: false },
+                        { text: 'Asia', correct: true },
+                        { text: 'Europe', correct: false },
+                        { text: 'North America', correct: false },
+                        { text: 'South America', correct: false },
+                        { text: 'Oceania', correct: false },
+                        { text: 'Antarctica', correct: false },
+                    ],
+                    info: 'Asia covers an area of 44,579,000 square kilometres which is about 30% of the total land area of Earth!'
                 },
                 {
-                    question: 'This is another test question',
+                    question: 'What is the oldest city in the world?',
                     answers: [
-                        { text: 'Correct Answer', correct: true },
-                        { text: 'Incorrect Answer', correct: false },
-                        { text: 'Incorrect Answer', correct: false },
-                        { text: 'Incorrect Answer', correct: false },
-                        { text: 'Incorrect Answer', correct: false },
-                        { text: 'Incorrect Answer', correct: false },
-                    ]
+                        { text: 'Jerusalem', correct: false },
+                        { text: 'Cairo', correct: false },
+                        { text: 'Athens', correct: false },
+                        { text: 'Damascus', correct: true },
+                    ],
+                    info: 'Damascus is the oldest continuously inhabited city in the world. Today it has a population of more than 2 million people!'
+                },{
+                    question: 'What is the tallest mountain in the world?',
+                    answers: [
+                        { text: 'Mount Everest', correct: true },
+                        { text: 'Mount Kilimanjaro', correct: false },
+                        { text: 'Mount Rainier', correct: false },
+                        { text: 'Mount Fuji', correct: false },
+                    ],
+                    info: 'Mount Everest, located in the Himalayas, is Earths highest mountain above sea level. It has an elevation of 29,032 feet!'
                 },
-                
+                {
+                    question: 'What is the smallest country in the world?',
+                    answers: [
+                        { text: 'Monaco', correct: false },
+                        { text: 'Vatican City', correct: true },
+                        { text: 'Luxembourg', correct: false },
+                        { text: 'Singapore', correct: false },
+                    ],
+                    info: 'Vatican City is the smallest country in the world with a population of only 825 people and an area of 109 acres!'
+                },
+                {
+                    question: 'True or False?: The Nile is the longest river in the world',
+                    answers: [
+                        { text: 'True', correct: false },
+                        { text: 'False', correct: true },
+                    ],
+                    info: 'The Nile is the longest river in Africa but not the world. That title goes to the Amazon river which has a length of 4,345 miles!'
+                },
+                {
+                    question: 'The Great Barrier Reef is off the coast of which country?',
+                    answers: [
+                        { text: 'Chile', correct: false },
+                        { text: 'New Zealand', correct: false },
+                        { text: 'Australia', correct: true },
+                        { text: 'Brazil', correct: false },
+                    ],
+                    info: 'The Great Barrier Reef is located off the eastern coast of Australia. It is the largest coral reef system in the world stretching over 2,300 kilometers!'
+                },
+                {
+                    question: 'What river runs through London?',
+                    answers: [
+                        { text: 'Thames', correct: true },
+                        { text: 'Seine', correct: false },
+                        { text: 'Mississippi', correct: false },
+                    ],
+                    info: 'The River Thames runs through London and has been an important trade and transportation route for over a thousand years!'
+                },
+                {
+                    question: 'What is the largest ocean in the world?',
+                    answers: [
+                        { text: 'Atlantic', correct: false },
+                        { text: 'Arctic', correct: false },
+                        { text: 'Pacific', correct: true },
+                        { text: 'Southern', correct: false },
+                    ],
+                    info: 'The largest ocean in the world is the Pacific Ocean. It covers 63 million square miles!'
+                },
+                {
+                    question: 'How many countries are there in the world?',
+                    answers: [
+                        { text: '206', correct: false },
+                        { text: '195', correct: true },
+                        { text: '250', correct: false },
+                    ],
+                    info: 'There are officially 195 countries in the world! 193 of these countries are member states of the UN and 2 are observer states.'
+                },
+                {
+                    question: 'True or False?: The border between Canada and the US is the longest in the world',
+                    answers: [
+                        { text: 'True', correct: true },
+                        { text: 'False', correct: false },
+                    ],
+                    info: 'The US-Canadian border is the longest in the world. It spans over 8,900 kilometers!'
+                }  
             ]
         }
     </script>
@@ -218,6 +338,7 @@
             </div>
         </div>
         <div class="controls">
+            <button id="back-btn" class="back-btn btn hide">Back</button>
             <button id="start-btn" class="start-btn btn">Start</button>
             <button id="next-btn" class="next-btn btn hide">Next</button>
         </div>
