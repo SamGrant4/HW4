@@ -32,6 +32,7 @@
             justify-content: center;
             align-items: center;
             background-color: hsl(var(--hue), 100%, 20%);
+            background-image: url('https://0utwqfl7.cdn.imgeng.in/explore-academics/programs/images/undergraduate/henson/geographymajorMH.jpg');
         }
 
         body.correct {
@@ -130,11 +131,22 @@
             const nextButton = document.getElementById('next-btn')
             const backButton = document.getElementById('back-btn')
             const questionContainerElement = document.getElementById('question-container')
+            const optionsContainerElement = document.getElementById('options-container')
             const questionElement = document.getElementById('question')
             const answerButtonsElement = document.getElementById('answer-buttons')
+            const cardShuffleButton = document.getElementById('card-shfl-btn');
+            const timerButton = document.getElementById('timer-btn');
+            const removeCorrectButton = document.getElementById('rmv-crct-btn');
 
             // global variable to keep track of restarts
             let restartCount = 0; 
+            // global variable to keep track of options
+            let optionCardShuffle = false
+            //cardShuffleButton.checked
+            let optionTimer = true
+            //timerButton.checked
+            let optionRemoveCorrect = true
+            // removeCorrectButton.checked
 
             let shuffledQuestions, currentQuestionIndex
             //using the domLoaded function because the buttons need to be rendered before we can
@@ -150,10 +162,32 @@
                 startButton.classList.add('hide')
             })
 
+            function cardShuffle(selected){
+                if (selected){
+                    shuffledQuestions = questions.sort(() => Math.random() - .5)
+                }
+                else{
+                    shuffledQuestions = questions.sort()
+                }
+            }
+            function timer(selected){
+                if(selected){
+                    console.log("timer")
+                }
+            }
+            function removeCorrect(selected){
+                if(selected){
+                    console.log("removeCorrect")
+                }
+            }
+
             function startGame() {
                 startButton.classList.add('hide')
                 if(restartCount == 0){
-                    shuffledQuestions = questions.sort(() => Math.random() - .5)
+                    optionsContainerElement.classList.add('hide')
+                    cardShuffle(optionCardShuffle)
+                    timer(optionTimer)
+                    removeCorrect(optionRemoveCorrect)
                 }
                 restartCount++
                 currentQuestionIndex = 0
@@ -208,7 +242,6 @@
                     backButton.classList.remove('hide')
                 } 
                 addInfo()
-
             }
 
             function setStatusClass(element, correct) {
