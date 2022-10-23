@@ -149,13 +149,11 @@
             let restartCount = 0; 
             // global variable to keep track of options
             let optionCardShuffle = false
-            //cardShuffleButton.checked
-            let optionTimer = true
-            //timerButton.checked
-            let optionRemoveCorrect = true
-            // removeCorrectButton.checked
+            let optionTimer = false
+            let optionRemoveCorrect = true // removeCorrectButton.checked
 
             let shuffledQuestions, currentQuestionIndex
+            let correctAnswers = []
             //using the domLoaded function because the buttons need to be rendered before we can
             //add an event listener
             startButton.addEventListener('click', startGame)
@@ -204,9 +202,14 @@
                 }
             }
         
-            function removeCorrect(selected){
-                if(selected){
-                    console.log("removeCorrect")
+            function removeCorrect(){
+                if(optionRemoveCorrect){
+                    // push correct to new array
+                    correctAnswers.push(shuffledQuestions[currentQuestionIndex])
+                    // remove correct from questions array
+                    shuffledQuestions.splice(currentQuestionIndex, 1)
+                    // reset index
+                    currentQuestionIndex = currentQuestionIndex - 1
                 }
             }
 
@@ -215,10 +218,9 @@
                 if(restartCount == 0){
                     optionsContainerElement.classList.add('hide')
                     cardShuffle(optionCardShuffle)
-                    removeCorrect(optionRemoveCorrect)
                 }
                 restartCount++
-                // Executs if timer option is checked
+                // Executes if timer option is checked
                 if(optionTimer){
                     timerContainer.classList.remove('hide')
                     stopTimer()
@@ -226,7 +228,12 @@
                 }
                 currentQuestionIndex = 0
                 questionContainerElement.classList.remove('hide')
+                // If user gets all questions correct
+                if(shuffledQuestions.length == 0){
+                    questionElement.innerText = "Congratulations, you got everything correct! Refresh the page to restart!"
+                }
                 setNextQuestion()
+
             }
 
             function setNextQuestion() {
@@ -276,6 +283,12 @@
                     backButton.classList.remove('hide')
                 } 
                 addInfo()
+                if(selectedButton.dataset.correct){
+                    removeCorrect()
+                }
+                else{
+                    console.log("incorrect")
+                }
             }
 
             function setStatusClass(element, correct) {
