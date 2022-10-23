@@ -62,7 +62,7 @@
         .btn {
             --hue: var(--hue-neutral);
             border: 1px solid hsl(var(--hue), 100%, 30%);
-            background-color: hsl(var(--hue), 100%, 50%);
+            background-color: hsl(var(--hue), 100%, 30%);
             border-radius: 5px;
             padding: 5px 10px;
             color: white;
@@ -101,11 +101,14 @@
             font-weight: bold;
             text-align: center;
             font-size: 1.5rem;
+            --hue: var(--hue-neutral);
+            color: hsl(var(--hue), 100%, 30%);
         }
 
         #options-container {
             padding: 10px 20px;
-            border: 1px dashed black;
+            --hue: var(--hue-neutral);
+            border: 1px dashed hsl(var(--hue), 100%, 30%);
             margin: 10px
         }
 
@@ -115,6 +118,16 @@
             gap: 10px;
             margin: 20px 0;
             justify-content: space-evenly;
+        }
+
+        #timer-container{
+            text-align: center;
+            font-size: 1.5rem;
+            margin: 20px 0;
+        }
+
+        #question{
+            text-align: center;
         }
 
         .hide {
@@ -148,9 +161,9 @@
             // global variable to keep track of restarts
             let restartCount = 0; 
             // global variable to keep track of options
-            let optionCardShuffle = false
+            let optionCardShuffle = true
             let optionTimer = false
-            let optionRemoveCorrect = true // removeCorrectButton.checked
+            let optionRemoveCorrect = false
 
             let shuffledQuestions, currentQuestionIndex
             let correctAnswers = []
@@ -165,6 +178,30 @@
                 currentQuestionIndex--
                 setNextQuestion()
                 startButton.classList.add('hide')
+            })
+            cardShuffleButton.addEventListener('change', () => {
+                if(cardShuffleButton.checked){
+                    optionCardShuffle = true
+                }
+                else{
+                    optionCardShuffle = false
+                }
+            })
+            timerButton.addEventListener('change', () => {
+                if(timerButton.checked){
+                    optionTimer = true
+                }
+                else{
+                    optionTimer = false
+                }
+            })
+            removeCorrectButton.addEventListener('change', () => {
+                if(removeCorrectButton.checked){
+                    optionRemoveCorrect = true
+                }
+                else{
+                    optionRemoveCorrect = false
+                }
             })
 
             function cardShuffle(selected){
@@ -188,6 +225,20 @@
 
             function setTimer() {
                 ++totalSeconds;
+                if(totalSeconds % 30 == 0){
+                    seconds.style = "background-color: red;";
+                    minutes.style = "background-color: red;";
+                }
+                else if(totalSeconds % 30 == 2){
+                    if(totalSeconds != 2){
+                        seconds.style = "background-color: red;";
+                        minutes.style = "background-color: red;";
+                    }
+                }
+                else{
+                    seconds.style = "background-color: white;";
+                    minutes.style = "background-color: white;";
+                }
                 secondsLabel.innerHTML = timeLabel(totalSeconds % 60);
                 minutesLabel.innerHTML = timeLabel(parseInt(totalSeconds / 60));
             }
