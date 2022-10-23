@@ -134,9 +134,16 @@
             const optionsContainerElement = document.getElementById('options-container')
             const questionElement = document.getElementById('question')
             const answerButtonsElement = document.getElementById('answer-buttons')
+            // options
             const cardShuffleButton = document.getElementById('card-shfl-btn');
             const timerButton = document.getElementById('timer-btn');
             const removeCorrectButton = document.getElementById('rmv-crct-btn');
+            // timer 
+            var timerContainer = document.getElementById('timer-container');
+            var minutesLabel = document.getElementById("minutes");
+            var secondsLabel = document.getElementById("seconds");
+            var totalSeconds = 0;
+            var timerVar = null;
 
             // global variable to keep track of restarts
             let restartCount = 0; 
@@ -170,11 +177,33 @@
                     shuffledQuestions = questions.sort()
                 }
             }
-            function timer(selected){
-                if(selected){
-                    console.log("timer")
+            
+            // Timer Functions
+            function startTimer(){
+                timerVar = setInterval(setTimer, 1000);
+            }
+
+            function stopTimer(){
+                clearInterval(timerVar);
+                totalSeconds = 0;
+            }
+
+            function setTimer() {
+                ++totalSeconds;
+                secondsLabel.innerHTML = timeLabel(totalSeconds % 60);
+                minutesLabel.innerHTML = timeLabel(parseInt(totalSeconds / 60));
+            }
+
+            function timeLabel(num) {
+                var timeString = num + "";
+                if (timeString.length < 2) {
+                    return "0" + timeString;
+                } 
+                else {
+                    return timeString;
                 }
             }
+        
             function removeCorrect(selected){
                 if(selected){
                     console.log("removeCorrect")
@@ -186,10 +215,15 @@
                 if(restartCount == 0){
                     optionsContainerElement.classList.add('hide')
                     cardShuffle(optionCardShuffle)
-                    timer(optionTimer)
                     removeCorrect(optionRemoveCorrect)
                 }
                 restartCount++
+                // Executs if timer option is checked
+                if(optionTimer){
+                    timerContainer.classList.remove('hide')
+                    stopTimer()
+                    startTimer()
+                }
                 currentQuestionIndex = 0
                 questionContainerElement.classList.remove('hide')
                 setNextQuestion()
@@ -405,6 +439,7 @@
                 <button class="btn">Answer 3</button>
                 <button class="btn">Answer 4</button>
             </div>
+            
         </div>
 
         <div class="controls">
@@ -412,7 +447,7 @@
             <button id="start-btn" class="start-btn btn">Start</button>
             <button id="next-btn" class="next-btn btn hide">Next</button>
         </div>
-
+        <div id="timer-container" class="hide"><label id="minutes">00</label>:<label id="seconds">00</label></div>
     </div>
 </body>
 
