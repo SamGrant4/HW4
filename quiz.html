@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Quiz App</title>
+    <title>Flash card App</title>
     <style>
         *,
         *::before,
@@ -361,7 +361,7 @@
                 if(document.getElementById("add-info") == null){
                     let newDiv = document.createElement('div');
                     newDiv.id = 'add-info';
-                    newDiv.style = "width: 800px; max-width: 80%; background-color: lightblue; border-radius: 5px; padding: 10px; box-shadow: 0 0 10px 2px;";
+                    newDiv.style = "width: 800px; max-width: 80%; --hue: var(--hue-neutral); background-color: hsl(var(--hue), 100%, 30%); color: white; border-radius: 5px; padding: 10px; box-shadow: 0 0 10px 2px;";
                     newDiv.innerHTML = shuffledQuestions[currentQuestionIndex].info;
                     document.body.appendChild(newDiv); 
                 }
